@@ -20,6 +20,9 @@
         #dns-packet {
             transition: top 0.8s ease-in-out, left 0.8s ease-in-out, opacity 0.3s ease;
         }
+        #hs-packet {
+            transition: top 0.36s ease-in-out, left 0.36s ease-in-out, opacity 0.3s ease, background-color 0.3s ease;
+        }
 
         /* Pulse animation for active/next steps */
         @keyframes pulse-ring {
@@ -232,7 +235,6 @@
             <button id="btn-step-8" onclick="handleStepClick(8)" class="absolute z-20 top-[18%] transform -translate-y-1/2 bg-white border-2 border-gray-400 text-gray-800 font-bold py-2 px-2 rounded shadow-sm hover:bg-gray-50 transition w-[166px] text-center leading-snug" style="right: 28%;">Step 8 – Retrieval and Return</button>
 
             <!-- NODES -->
-            
             <!-- Client Node -->
             <div id="node-client" class="absolute z-10 flex flex-col items-center justify-center transform -translate-x-1/2 -translate-y-1/2" style="left: 24%; top: 18%;">
                 <!-- SVG Client PC -->
@@ -382,6 +384,11 @@
                 DNS Qry
             </div>
 
+            <!-- Handshake Packet -->
+            <div id="hs-packet" class="absolute z-30 flex items-center justify-center font-bold text-[10px] text-white bg-orange-500 border-2 border-white rounded px-2 py-1 shadow-lg transform -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none" style="left: 24%; top: 18%;">
+                SYN
+            </div>
+
         </div>
     </main>
 
@@ -474,8 +481,8 @@
                                        </li>
                                    </ul>
                                </div>
-                               <div class="flex flex-row items-center gap-2">
-                                   <button onclick="document.getElementById('step1-attacks-popup').classList.toggle('hidden')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50" title="View Application Layer Attacks">
+                               <div class="flex flex-row items-center gap-2 cursor-pointer group" onclick="document.getElementById('step1-attacks-popup').classList.toggle('hidden')" title="Toggle Application Layer Attacks">
+                                   <button class="text-red-500 group-hover:text-red-700 bg-red-50 group-hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform group-hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                            <path d="m2 2 5 5"></path>
                                            <path d="m22 22-5-5"></path>
@@ -488,7 +495,7 @@
                                            <path d="M16 19a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 19"></path>
                                        </svg>
                                    </button>
-                                   <span onclick="document.getElementById('step1-attacks-popup').classList.toggle('hidden')" class="text-xs font-bold text-red-600 cursor-pointer hover:text-red-800 hover:underline transition-colors">Application Layer Attacks</span>
+                                   <span class="text-xs font-bold text-red-600 group-hover:text-red-800 group-hover:underline transition-colors">Application Layer Attacks</span>
                                </div>
                            </div>
                        </div>`,
@@ -575,8 +582,8 @@
                                    </li>
                                </ul>
                            </div>
-                           <div class="flex flex-row items-center gap-2">
-                               <button onclick="document.getElementById('step2-attacks-popup').classList.toggle('hidden')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50" title="View Transport Layer Attacks">
+                           <div class="flex flex-row items-center gap-2 cursor-pointer group" onclick="document.getElementById('step2-attacks-popup').classList.toggle('hidden')" title="Toggle Transport Layer Attacks">
+                               <button class="text-red-500 group-hover:text-red-700 bg-red-50 group-hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform group-hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                        <path d="m2 2 5 5"></path>
                                        <path d="m22 22-5-5"></path>
@@ -589,7 +596,7 @@
                                        <path d="M16 19a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 19"></path>
                                    </svg>
                                </button>
-                               <span onclick="document.getElementById('step2-attacks-popup').classList.toggle('hidden')" class="text-xs font-bold text-red-600 cursor-pointer hover:text-red-800 hover:underline transition-colors">Transport Layer Attacks</span>
+                               <span class="text-xs font-bold text-red-600 group-hover:text-red-800 group-hover:underline transition-colors">Transport Layer Attacks</span>
                            </div>
                        </div>
                        </div>`,
@@ -598,10 +605,10 @@
                 buttonId: "btn-step-2"
             },
             3: {
-                title: "Step 3 – Internet Layer (with DNS)",
+                title: "Step 3 – Internet Layer (with DNS & TCP Handshake)",
                 body: `<div class="relative pb-16">
-                       <strong>Action:</strong> Addressing the package for the internet.<br><br>
-                       <strong>Details:</strong> The TCP segment needs an IP header. However, the Client only knows the destination domain name, not the Server's IP address. <strong>Before proceeding, the Client pauses to send a DNS query</strong> to resolve the IP address. Once the DNS reply is received, the Client completes encapsulation by adding the IP header containing the Source and Destination IPs.
+                       <strong>Action:</strong> Addressing and connecting over the internet.<br><br>
+                       <strong>Details:</strong> The TCP segment needs an IP header. However, the Client only knows the destination domain name, not the Server's IP address. <strong>Before proceeding, the Client pauses to send a DNS query</strong> to resolve the IP address. Once the DNS reply is received, <strong>the Client performs a TCP 3-Way Handshake (SYN, SYN-ACK, ACK)</strong> to establish a reliable connection with the Server. Only then can the Client complete encapsulation by adding the IP header.
                        
                        <!-- Attack Icon & Popup -->
                        <div class="absolute -bottom-6 -left-2 flex flex-col items-start z-50">
@@ -645,8 +652,8 @@
                                    </li>
                                </ul>
                            </div>
-                           <div class="flex flex-row items-center gap-2">
-                               <button onclick="document.getElementById('step3-attacks-popup').classList.toggle('hidden')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50" title="View Internet Layer Attacks">
+                           <div class="flex flex-row items-center gap-2 cursor-pointer group" onclick="document.getElementById('step3-attacks-popup').classList.toggle('hidden')" title="Toggle Internet Layer Attacks">
+                               <button class="text-red-500 group-hover:text-red-700 bg-red-50 group-hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform group-hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                        <path d="m2 2 5 5"></path>
                                        <path d="m22 22-5-5"></path>
@@ -659,7 +666,7 @@
                                        <path d="M16 19a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 19"></path>
                                    </svg>
                                </button>
-                               <span onclick="document.getElementById('step3-attacks-popup').classList.toggle('hidden')" class="text-xs font-bold text-red-600 cursor-pointer hover:text-red-800 hover:underline transition-colors">Internet Layer Attacks</span>
+                               <span class="text-xs font-bold text-red-600 group-hover:text-red-800 group-hover:underline transition-colors">Internet Layer Attacks</span>
                            </div>
                        </div>
                        </div>`,
@@ -742,8 +749,8 @@
                                    </li>
                                </ul>
                            </div>
-                           <div class="flex flex-row items-center gap-2">
-                               <button onclick="document.getElementById('step4-attacks-popup').classList.toggle('hidden')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50" title="View Network Access Layer Attacks">
+                           <div class="flex flex-row items-center gap-2 cursor-pointer group" onclick="document.getElementById('step4-attacks-popup').classList.toggle('hidden')" title="Toggle Network Access Layer Attacks">
+                               <button class="text-red-500 group-hover:text-red-700 bg-red-50 group-hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform group-hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                        <path d="m2 2 5 5"></path>
                                        <path d="m22 22-5-5"></path>
@@ -756,7 +763,7 @@
                                        <path d="M16 19a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 19"></path>
                                    </svg>
                                </button>
-                               <span onclick="document.getElementById('step4-attacks-popup').classList.toggle('hidden')" class="text-xs font-bold text-red-600 cursor-pointer hover:text-red-800 hover:underline transition-colors">Network Access Layer Attacks</span>
+                               <span class="text-xs font-bold text-red-600 group-hover:text-red-800 group-hover:underline transition-colors">Network Access Layer Attacks</span>
                            </div>
                        </div>
                        </div>`,
@@ -850,8 +857,8 @@
                                    </li>
                                </ul>
                            </div>
-                           <div class="flex flex-row items-center gap-2">
-                               <button onclick="document.getElementById('step5-attacks-popup').classList.toggle('hidden')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50" title="View Switching Attacks">
+                           <div class="flex flex-row items-center gap-2 cursor-pointer group" onclick="document.getElementById('step5-attacks-popup').classList.toggle('hidden')" title="Toggle Switching Attacks">
+                               <button class="text-red-500 group-hover:text-red-700 bg-red-50 group-hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform group-hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                        <path d="m2 2 5 5"></path>
                                        <path d="m22 22-5-5"></path>
@@ -864,7 +871,7 @@
                                        <path d="M16 19a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 19"></path>
                                    </svg>
                                </button>
-                               <span onclick="document.getElementById('step5-attacks-popup').classList.toggle('hidden')" class="text-xs font-bold text-red-600 cursor-pointer hover:text-red-800 hover:underline transition-colors">Switching Attacks</span>
+                               <span class="text-xs font-bold text-red-600 group-hover:text-red-800 group-hover:underline transition-colors">Switching Attacks</span>
                            </div>
                        </div>
                        </div>`,
@@ -957,8 +964,8 @@
                                    </li>
                                </ul>
                            </div>
-                           <div class="flex flex-row items-center gap-2">
-                               <button onclick="document.getElementById('step6-attacks-popup').classList.toggle('hidden')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50" title="View Routing Attacks">
+                           <div class="flex flex-row items-center gap-2 cursor-pointer group" onclick="document.getElementById('step6-attacks-popup').classList.toggle('hidden')" title="Toggle Routing Attacks">
+                               <button class="text-red-500 group-hover:text-red-700 bg-red-50 group-hover:bg-red-100 p-2.5 rounded-full shadow-md transition-transform transform group-hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                        <path d="m2 2 5 5"></path>
                                        <path d="m22 22-5-5"></path>
@@ -971,7 +978,7 @@
                                        <path d="M16 19a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 19"></path>
                                    </svg>
                                </button>
-                               <span onclick="document.getElementById('step6-attacks-popup').classList.toggle('hidden')" class="text-xs font-bold text-red-600 cursor-pointer hover:text-red-800 hover:underline transition-colors">Routing Attacks</span>
+                               <span class="text-xs font-bold text-red-600 group-hover:text-red-800 group-hover:underline transition-colors">Routing Attacks</span>
                            </div>
                        </div>
                        </div>`,
@@ -1007,6 +1014,7 @@
 
         const packet = document.getElementById('packet');
         const dnsPacket = document.getElementById('dns-packet');
+        const hsPacket = document.getElementById('hs-packet');
         const modal = document.getElementById('info-modal');
         const modalContent = document.getElementById('modal-content');
 
@@ -1068,6 +1076,7 @@
             pendingAnimationStep = stepNumber;
         }
 
+        // Close Modal and trigger sequence
         async function closeModal() {
             clearInterval(typingInterval); // Stop typing if modal closed early
             modal.classList.add('opacity-0');
@@ -1090,6 +1099,7 @@
             }, 300);
         }
 
+        // Open custom modal contents during long sequences (e.g., Step 3)
         function openModalWithContent(title, body, buttonText = "Understood, Trace Packet") {
             document.getElementById('modal-title').innerHTML = title;
             document.getElementById('modal-body').innerHTML = body;
@@ -1182,6 +1192,54 @@
                     dnsPacket.style.opacity = '0';
                     await wait(300);
                     
+                    // --- NEW: TCP 3-Way Handshake ---
+                    hsPacket.style.left = '24%';
+                    hsPacket.style.top = '18%'; // Start at Client
+                    hsPacket.innerHTML = "SYN";
+                    hsPacket.classList.remove('bg-orange-700', 'bg-green-600');
+                    hsPacket.classList.add('bg-orange-500');
+                    hsPacket.style.opacity = '1';
+                    await wait(400);
+
+                    const outboundPath = ['node-sw1', 'node-er1', 'node-isp1', 'node-internet', 'node-isp2', 'node-er2', 'node-sw2', 'node-server'];
+                    const inboundPath = ['node-sw2', 'node-er2', 'node-isp2', 'node-internet', 'node-isp1', 'node-er1', 'node-sw1', 'node-client'];
+
+                    // 1. SYN to Server
+                    for (const node of outboundPath) {
+                        const coords = getNodeCoords(node);
+                        hsPacket.style.left = coords.left;
+                        hsPacket.style.top = coords.top;
+                        await wait(360); 
+                    }
+                    
+                    // 2. SYN-ACK back to Client
+                    hsPacket.innerHTML = "SYN-ACK";
+                    hsPacket.classList.replace('bg-orange-500', 'bg-orange-700');
+                    await wait(400);
+                    
+                    for (const node of inboundPath) {
+                        const coords = getNodeCoords(node);
+                        hsPacket.style.left = coords.left;
+                        hsPacket.style.top = coords.top;
+                        await wait(360);
+                    }
+
+                    // 3. ACK to Server
+                    hsPacket.innerHTML = "ACK";
+                    hsPacket.classList.replace('bg-orange-700', 'bg-green-600');
+                    await wait(400);
+
+                    for (const node of outboundPath) {
+                        const coords = getNodeCoords(node);
+                        hsPacket.style.left = coords.left;
+                        hsPacket.style.top = coords.top;
+                        await wait(360);
+                    }
+
+                    hsPacket.style.opacity = '0';
+                    await wait(300);
+                    // --- END TCP Handshake ---
+                    
                     // Phase 2: Show Encapsulation Modal
                     const step3Part2Body = `<strong>Action:</strong> Encapsulating the TCP segment into an IP Packet.<br><br>
                        <div class="mt-3 mb-4 border-2 border-gray-300 rounded-lg shadow-md bg-gray-50 h-40 relative flex items-center justify-center overflow-hidden font-mono">
@@ -1198,7 +1256,7 @@
                                </div>
                            </div>
                        </div>
-                       <strong>Details:</strong> With the Server's IP address now known from the DNS query, the Internet Layer adds the IP Header. This includes the Client's Source IP and the Server's newly learnt Destination IP. The resulting structure is an <strong>IP Packet</strong> ready for routing.`;
+                       <strong>Details:</strong> With the Server's IP address known and the <strong>TCP connection successfully established</strong> via the 3-way handshake, the Internet Layer now completes encapsulation by adding the IP Header. This resulting structure is an <strong>IP Packet</strong> ready for routing.`;
                     
                     await openModalWithContent("Step 3 – Internet Layer (Encapsulation)", step3Part2Body, "Finish Encapsulation");
 
